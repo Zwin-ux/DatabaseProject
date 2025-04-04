@@ -15,7 +15,7 @@ README files found in this repository.**
 | 1           |   Peter Siri           |  tsiri@mail.sfsu.edu        | Team Lead               |
 | 2           |   Ronaldo Rodriguez    |  rrodriguez16@sfsu.edu      | Database Architect      |
 | 3           |   Andy Yip             |  ayip3@sfsu.edu             | Database Developer      |
-| 4           |   Zorigto Erdyneev     |  zerdyneev@sfsu.edu         | Database Analyst/Tester |
+| 4           |   Mazen Zwin           |  mzwin3545@gmail.com        | Database Analyst/Tester |
 
 
 --- 
