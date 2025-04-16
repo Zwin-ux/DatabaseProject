@@ -1,3 +1,6 @@
+#ok fellas i might be stupid but im gonna keep trying, after class im gonna lock back in and continue on this
+
+
 import pandas as pd
 from sqlalchemy import create_engine, text
 import re
