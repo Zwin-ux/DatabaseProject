@@ -18,6 +18,7 @@ README files found in this repository.**
 | 4           |   Mazen Zwin           |  mzwin3545@gmail.com        | Database Analyst/Tester |
 
 
+ python profile_data.py 
 --- 
 
 ## Team Roles for this Project  
