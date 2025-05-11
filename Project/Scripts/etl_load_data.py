@@ -7,7 +7,9 @@ import re
 
 # TALK TO MY TEAM ABOUT THIS REMEMBER MAZEN
 DB_URL = 'mysql+pymysql://user:password@localhost/MultimediaContentDB'
-CSV_PATH = '../Datasets/Data.csv'
+import os
+CSV_PATH = os.path.join(os.path.dirname(__file__), '../Datasets/Data.csv')
+CSV_PATH = os.path.abspath(CSV_PATH)
 
 def split_names(names):
     if pd.isna(names):
