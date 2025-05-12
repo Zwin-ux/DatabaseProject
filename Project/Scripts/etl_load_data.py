@@ -6,8 +6,8 @@ from sqlalchemy import create_engine, text
 import re
 
 # TALK TO MY TEAM ABOUT THIS REMEMBER MAZEN
-DB_URL = 'mysql+pymysql://user:password@localhost/MultimediaContentDB'
-import os
+DB_URL = 'mysql+pymysql://root:mason@localhost/MultimediaContentDB'
+import os   
 CSV_PATH = os.path.join(os.path.dirname(__file__), '../Datasets/Data.csv')
 CSV_PATH = os.path.abspath(CSV_PATH)
 

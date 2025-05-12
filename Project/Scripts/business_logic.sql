@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Error_Log (
 );
 
 -- 2. Trigger: Enforce Watchlist Size Limit (max 100 items per user)
-DELIMITER $$
+can
 CREATE TRIGGER trg_watchlist_limit
 BEFORE INSERT ON Watchlist
 FOR EACH ROW
