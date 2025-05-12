@@ -7,6 +7,11 @@ INSERT INTO Watchlist (user_id, content_id) VALUES (1, 1001);
 SELECT COUNT(*) FROM Watchlist WHERE user_id = 1; -- Should be 50
 
 -- Test 2: Director Uniqueness Trigger
+-- Create test content and director first to satisfy foreign keys
+INSERT IGNORE INTO Content (content_id, title, description, release_year) VALUES (2001, 'Test Content 2001', 'For testing director uniqueness', 2025);
+INSERT IGNORE INTO User (user_id, name, email) VALUES (3001, 'Test Director 3001', 'director3001@example.com');
+INSERT IGNORE INTO Director (director_id) VALUES (3001);
+
 -- Tries to assign the same director twice to the same content, expect error and error log
 INSERT INTO Content_Director (content_id, director_id) VALUES (2001, 3001);
 INSERT INTO Content_Director (content_id, director_id) VALUES (2001, 3001); -- Should fail and log error
