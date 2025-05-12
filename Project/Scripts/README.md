@@ -20,11 +20,24 @@ ensuring that any developer can understand their purpose and functionality.
 
 ## Quick Start
 
-1. Import `schema.sql` to create tables.
-2. Run `etl_load_data.py` to load data.
-3. Run each SQL script in Scripts/ for triggers, functions, procedures, events.
-4. (Optional) Use `business_logic.sql` and `example_inserts.sql` for additional logic and sample data.
+1. Install Python dependencies:
+   ```sh
+   pip install -r requirements.txt
+   ```
+2. Import `schema.sql` to create tables in your MySQL database.
+3. Run `etl_load_data.py` to load and clean data from `../Datasets/Data.csv` into the database.
+4. Run each SQL script in `Scripts/` for triggers (`Triggers.sql`), functions (`Functions.sql`), procedures (`Procedures.sql`), and events (`Events.sql`).
+5. (Optional) Use `business_logic.sql` and `example_inserts.sql` for additional logic and sample data.
+6. Use `Tests.sql` to verify business logic and trigger behavior.
+
+## Dependencies
+- Python 3.x
+- MySQL server
+- All required Python packages are listed in `requirements.txt`.
+
+## Script Naming
+- All script names in this README match the actual files in the `Scripts/` directory.
 
 ## Notes
-- Each script is commented.
-- For issues, check Error_Log table.
+- Each script is commented for clarity.
+- For issues or trigger errors, check the `Error_Log` table in your database.
