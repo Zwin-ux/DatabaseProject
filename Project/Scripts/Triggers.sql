@@ -9,34 +9,32 @@ CREATE TABLE IF NOT EXISTS Director_Assignment_Errors (
     error_message VARCHAR(255),
     error_time DATETIME DEFAULT NOW()
 );
-CREATE TABLE IF NOT EXISTS Error_Log (
-    error_id INT PRIMARY KEY AUTO_INCREMENT,
-    error_message VARCHAR(255),
-    error_time DATETIME DEFAULT NOW()
+DROP TABLE IF EXISTS Error_Log;
+CREATE TABLE Error_Log (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    error_message TEXT,
+    error_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Drop all triggers first to avoid 'already exists' errors I got like 6 errors for this  i love SQL
+DROP TRIGGER IF EXISTS trg_watchlist_limit;
+DROP TRIGGER IF EXISTS trg_unique_director;
+DROP TRIGGER IF EXISTS trg_log_transaction_error;
+DROP TRIGGER IF EXISTS trg_archive_content_on_low_rating;
 
 -- 1. Trigger: Enforce Watchlist Size Limit (max 50 items per user)
 -- If user has 50, remove oldest, then insert
-DROP TRIGGER IF EXISTS trg_watchlist_limit;
 DELIMITER $$
 CREATE TRIGGER trg_watchlist_limit
 BEFORE INSERT ON Watchlist
 FOR EACH ROW
 BEGIN
     DECLARE watchlist_count INT;
-    
-    -- Get actual count with lock to prevent race conditions
     SELECT COUNT(*) INTO watchlist_count 
     FROM Watchlist 
-    WHERE user_id = NEW.user_id 
-    FOR UPDATE;
-    
+    WHERE user_id = NEW.user_id;
     IF watchlist_count >= 50 THEN
-        -- Remove oldest item first
-        DELETE FROM Watchlist
-        WHERE user_id = NEW.user_id
-        ORDER BY watchlist_id ASC
-        LIMIT 1;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Watchlist limit reached';
     END IF;
 END$$
 DELIMITER ;;
@@ -96,4 +94,4 @@ BEGIN
         VALUES (CONCAT('Content ID ', NEW.content_id, ' archived due to low rating of ', avg_rating));
     END IF;
 END$$
-DELIMITER ;;
+DELIMITER ;
