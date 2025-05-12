@@ -1,4 +1,3 @@
--- Sample insert/test scripts for main tables and relationships
 
 INSERT INTO User (name, email) VALUES ('Alice Smith', 'alice.smith@example.com');
 INSERT INTO User (name, email) VALUES ('Bob Jones', 'bob.jones@example.com');
