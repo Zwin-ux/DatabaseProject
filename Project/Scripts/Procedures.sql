@@ -49,10 +49,35 @@ DROP PROCEDURE IF EXISTS handle_failed_payment;
 DELIMITER $$
 CREATE PROCEDURE handle_failed_payment(uid INT, pmid INT, errmsg VARCHAR(255))
 BEGIN
-    INSERT INTO Payment_Errors (user_id, payment_method_id, error_message) VALUES (uid, pmid, errmsg);
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Rollback if there's any error
+        ROLLBACK;
+        -- Log the error
+        INSERT INTO Error_Log (error_message) 
+        VALUES (CONCAT('Failed to handle payment error for user ', uid, ': ', errmsg));
+    END;
+    
+    -- Start transaction to ensure all operations succeed or fail together
+    START TRANSACTION;
+    
+    -- Log the payment error
+    INSERT INTO Payment_Errors (user_id, payment_method_id, error_message) 
+    VALUES (uid, pmid, errmsg);
+    
+    -- Update subscription status
+    UPDATE User_Subscription 
+    SET end_date = NOW() 
+    WHERE user_id = uid AND end_date > NOW();
+    
     -- Simulate notification (in real system, would send email/notification)
-    UPDATE User_Subscription SET end_date = NOW() WHERE user_id = uid AND end_date > NOW();
+    INSERT INTO Error_Log (error_message) 
+    VALUES (CONCAT('Payment failed notification for user ', uid));
+    
+    -- If all operations succeed, commit the transaction
+    COMMIT;
 END$$
+DELIMITER ;$$
 DELIMITER ;
 
 -- 4. Procedure: Refresh Popular Content Rankings (top 10 per genre)
@@ -67,29 +92,75 @@ DROP PROCEDURE IF EXISTS refresh_popular_content_rankings;
 DELIMITER $$
 CREATE PROCEDURE refresh_popular_content_rankings()
 BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Rollback if there's any error
+        ROLLBACK;
+        -- Log the error
+        INSERT INTO Error_Log (error_message) 
+        VALUES ('Failed to refresh popular content rankings');
+    END;
+    
+    -- Start transaction
+    START TRANSACTION;
+    
+    -- Use temporary table for better performance with large datasets
+    DROP TEMPORARY TABLE IF EXISTS temp_view_counts;
+    
+    -- Create temp table with indexes for faster joins
+    CREATE TEMPORARY TABLE temp_view_counts (
+        content_id INT,
+        view_count INT,
+        PRIMARY KEY (content_id)
+    ) AS (
+        SELECT 
+            content_id, 
+            COUNT(*) AS view_count
+        FROM 
+            Content_WatchHistory
+        WHERE 
+            watch_date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+        GROUP BY 
+            content_id
+    );
+    
+    -- Clear existing rankings
     DELETE FROM Popular_Content;
+    
+    -- Insert new rankings using the temp table
     INSERT INTO Popular_Content (genre_id, content_id, view_count, rank)
-    SELECT cg.genre_id, cg.content_id, IFNULL(vw.view_count, 0) AS view_count, rnk
+    SELECT 
+        cg.genre_id, 
+        cg.content_id, 
+        IFNULL(vc.view_count, 0) AS view_count, 
+        rnk
     FROM (
-        SELECT cg.genre_id, cg.content_id,
-            ROW_NUMBER() OVER (PARTITION BY cg.genre_id ORDER BY IFNULL(vw.view_count, 0) DESC) AS rnk
-        FROM Content_Genre cg
-        LEFT JOIN (
-            SELECT content_id, COUNT(*) AS view_count
-            FROM Content_WatchHistory
-            WHERE watch_date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
-            GROUP BY content_id
-        ) vw ON cg.content_id = vw.content_id
+        SELECT 
+            cg.genre_id, 
+            cg.content_id,
+            ROW_NUMBER() OVER (
+                PARTITION BY cg.genre_id 
+                ORDER BY IFNULL(vc.view_count, 0) DESC
+            ) AS rnk
+        FROM 
+            Content_Genre cg
+            LEFT JOIN temp_view_counts vc ON cg.content_id = vc.content_id
     ) ranked
     JOIN Content_Genre cg ON ranked.content_id = cg.content_id AND ranked.genre_id = cg.genre_id
-    LEFT JOIN (
-        SELECT content_id, COUNT(*) AS view_count
-        FROM Content_WatchHistory
-        WHERE watch_date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
-        GROUP BY content_id
-    ) vw ON cg.content_id = vw.content_id
+    LEFT JOIN temp_view_counts vc ON cg.content_id = vc.content_id
     WHERE ranked.rnk <= 10;
+    
+    -- Log the refresh operation
+    INSERT INTO Error_Log (error_message) 
+    VALUES (CONCAT('Popular content rankings refreshed successfully at ', NOW()));
+    
+    -- Drop the temporary table
+    DROP TEMPORARY TABLE IF EXISTS temp_view_counts;
+    
+    -- Commit transaction
+    COMMIT;
 END$$
+DELIMITER ;$$
 DELIMITER ;
 
 -- 5. Procedure: Generate Content Usage Report

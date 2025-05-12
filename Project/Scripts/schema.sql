@@ -2,32 +2,12 @@
 CREATE DATABASE IF NOT EXISTS MultimediaContentDB;
 USE MultimediaContentDB;
 
--- Drop tables in dependency order (child tables first)
-DROP TABLE IF EXISTS Content_Tag;
-DROP TABLE IF EXISTS Content_Genre;
-DROP TABLE IF EXISTS Content_Actor;
-DROP TABLE IF EXISTS Content_Director;
-DROP TABLE IF EXISTS Watchlist;
-DROP TABLE IF EXISTS Playlist;
-DROP TABLE IF EXISTS Content_WatchHistory;
-DROP TABLE IF EXISTS Review;
-DROP TABLE IF EXISTS Rating;
-DROP TABLE IF EXISTS Content;
-DROP TABLE IF EXISTS Tag;
-DROP TABLE IF EXISTS Genre;
-DROP TABLE IF EXISTS Director;
-DROP TABLE IF EXISTS Actor;
-DROP TABLE IF EXISTS User;
-DROP TABLE IF EXISTS Subscription_Plan;
-DROP TABLE IF EXISTS User_Subscription;
-DROP TABLE IF EXISTS Payment_Method;
-DROP TABLE IF EXISTS Transaction;
-DROP TABLE IF EXISTS Content_Accessibility;
-DROP TABLE IF EXISTS Content_Availability;
-DROP TABLE IF EXISTS Content_Release;
-DROP TABLE IF EXISTS Content_Access_Map;
-DROP TABLE IF EXISTS Content_Accessibility_Map;
-
+-- Error Logging Table (must exist before any triggers/procedures/events that use it)
+CREATE TABLE IF NOT EXISTS Error_Log (
+    log_id INT PRIMARY KEY AUTO_INCREMENT,
+    error_message VARCHAR(512) NOT NULL,
+    log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Users & Roles
 CREATE TABLE User (

@@ -23,13 +23,28 @@ CREATE TRIGGER trg_watchlist_limit
 BEFORE INSERT ON Watchlist
 FOR EACH ROW
 BEGIN
-    IF (SELECT COUNT(*) FROM Watchlist WHERE user_id = NEW.user_id) >= 50 THEN
+    DECLARE watchlist_count INT;
+    
+    -- Use transaction for better ACID guarantees
+    START TRANSACTION;
+    
+    -- Get actual count with lock to prevent race conditions
+    SELECT COUNT(*) INTO watchlist_count 
+    FROM Watchlist 
+    WHERE user_id = NEW.user_id 
+    FOR UPDATE;
+    
+    IF watchlist_count >= 50 THEN
+        -- Remove oldest item first
         DELETE FROM Watchlist
         WHERE user_id = NEW.user_id
         ORDER BY watchlist_id ASC
         LIMIT 1;
     END IF;
-END;
+    
+    COMMIT;
+END$$
+DELIMITER ;;
 
 -- 2. Trigger: Ensure Unique Director for Content
 -- Block duplicate director assignments, log errors to Director_Assignment_Errors
@@ -69,10 +84,21 @@ AFTER INSERT ON Review
 FOR EACH ROW
 BEGIN
     DECLARE avg_rating DECIMAL(3,2);
-    SELECT AVG(score) INTO avg_rating FROM Rating WHERE content_id = NEW.content_id;
+    
+    -- Get latest average rating
+    SELECT AVG(score) INTO avg_rating 
+    FROM Rating 
+    WHERE content_id = NEW.content_id;
+    
+    -- Archive content if rating is too low
     IF avg_rating < 2.0 THEN
         UPDATE Content_Availability
         SET available_to = NOW(), available_from = NULL
         WHERE content_id = NEW.content_id;
+        
+        -- Log the archiving action for audit purposes
+        INSERT INTO Error_Log (error_message) 
+        VALUES (CONCAT('Content ID ', NEW.content_id, ' archived due to low rating of ', avg_rating));
     END IF;
-END;
+END$$
+DELIMITER ;;
