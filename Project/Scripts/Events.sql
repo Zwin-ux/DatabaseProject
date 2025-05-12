@@ -2,7 +2,9 @@
 -- Contains all scheduled events for MultimediaContentDB
 
 -- 1. Scheduled Event: Expire Subscriptions Daily
-CREATE EVENT IF NOT EXISTS expire_subscriptions
+DROP EVENT IF EXISTS expire_subscriptions;
+DELIMITER $$
+CREATE EVENT expire_subscriptions
 ON SCHEDULE EVERY 1 DAY
 DO
     UPDATE User_Subscription
@@ -10,7 +12,9 @@ DO
     WHERE end_date < NOW() AND end_date IS NOT NULL;
 
 -- 2. Event: Expire Content Availability
-CREATE EVENT IF NOT EXISTS expire_content_availability
+DROP EVENT IF EXISTS expire_content_availability;
+DELIMITER $$
+CREATE EVENT expire_content_availability
 ON SCHEDULE EVERY 1 DAY
 DO
     UPDATE Content_Availability
@@ -18,13 +22,17 @@ DO
     WHERE available_to < NOW() AND available_to IS NOT NULL;
 
 
-CREATE EVENT IF NOT EXISTS refresh_popular_content_rankings_event
+DROP EVENT IF EXISTS refresh_popular_content_rankings_event;
+DELIMITER $$
+CREATE EVENT refresh_popular_content_rankings_event
 ON SCHEDULE EVERY 1 DAY
 DO
     CALL refresh_popular_content_rankings();
 
 
-CREATE EVENT IF NOT EXISTS notify_expired_subscriptions
+DROP EVENT IF EXISTS notify_expired_subscriptions;
+DELIMITER $$
+CREATE EVENT notify_expired_subscriptions
 ON SCHEDULE EVERY 1 DAY
 DO
     INSERT INTO Error_Log (error_message)

@@ -2,6 +2,7 @@
 -- Contains all functions for MultimediaContentDB
 
 -- 1. Function: Rank Top 3 Genres by Watch Hours (last month)
+DROP FUNCTION IF EXISTS get_top_genres_by_watch_hours;
 DELIMITER $$
 CREATE FUNCTION get_top_genres_by_watch_hours()
 RETURNS TEXT
@@ -24,6 +25,7 @@ END$$
 DELIMITER ;
 
 -- 2. Function: Find Most Frequent Collaborators (Actor-Director pairs)
+DROP FUNCTION IF EXISTS get_most_frequent_collaborators;
 DELIMITER $$
 CREATE FUNCTION get_most_frequent_collaborators()
 RETURNS TEXT
@@ -46,6 +48,7 @@ END$$
 DELIMITER ;
 
 -- 3. Function: Validate Subscription Status (active/expired)
+DROP FUNCTION IF EXISTS get_subscription_status;
 DELIMITER $$
 CREATE FUNCTION get_subscription_status(uid INT)
 RETURNS VARCHAR(10)
@@ -65,6 +68,7 @@ END$$
 DELIMITER ;
 
 -- 4. Function: Rank Genres by Popularity
+DROP FUNCTION IF EXISTS get_genre_rank;
 DELIMITER $$
 CREATE FUNCTION get_genre_rank(gid INT)
 RETURNS INT
@@ -77,6 +81,7 @@ END$$
 DELIMITER ;
 
 -- 5. Function: Validate Active Subscription
+DROP FUNCTION IF EXISTS is_subscription_active;
 DELIMITER $$
 CREATE FUNCTION is_subscription_active(uid INT)
 RETURNS BOOLEAN

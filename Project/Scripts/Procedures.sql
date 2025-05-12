@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS Payment_Errors (
 );
 
 -- 1. Procedure: Generate Monthly User Activity Report
+DROP PROCEDURE IF EXISTS generate_monthly_user_activity_report;
 DELIMITER $$
 CREATE PROCEDURE generate_monthly_user_activity_report(uid INT)
 BEGIN
@@ -27,6 +28,7 @@ END$$
 DELIMITER ;
 
 -- 2. Procedure: Process Batch Content Updates (by criteria)
+DROP PROCEDURE IF EXISTS update_content_availability_by_criteria;
 DELIMITER $$
 CREATE PROCEDURE update_content_availability_by_criteria(min_release_year INT, min_views INT)
 BEGIN
@@ -43,6 +45,7 @@ END$$
 DELIMITER ;
 
 -- 3. Procedure: Handle Failed Payments
+DROP PROCEDURE IF EXISTS handle_failed_payment;
 DELIMITER $$
 CREATE PROCEDURE handle_failed_payment(uid INT, pmid INT, errmsg VARCHAR(255))
 BEGIN
@@ -60,6 +63,7 @@ CREATE TABLE IF NOT EXISTS Popular_Content (
     rank INT,
     PRIMARY KEY (genre_id, rank)
 );
+DROP PROCEDURE IF EXISTS refresh_popular_content_rankings;
 DELIMITER $$
 CREATE PROCEDURE refresh_popular_content_rankings()
 BEGIN
@@ -89,6 +93,7 @@ END$$
 DELIMITER ;
 
 -- 5. Procedure: Generate Content Usage Report
+DROP PROCEDURE IF EXISTS generate_content_report;
 DELIMITER $$
 CREATE PROCEDURE generate_content_report()
 BEGIN

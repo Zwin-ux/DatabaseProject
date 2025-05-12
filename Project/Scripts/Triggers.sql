@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS Error_Log (
 
 -- 1. Trigger: Enforce Watchlist Size Limit (max 50 items per user)
 -- If user has 50, remove oldest, then insert
+DROP TRIGGER IF EXISTS trg_watchlist_limit;
+DELIMITER $$
 CREATE TRIGGER trg_watchlist_limit
 BEFORE INSERT ON Watchlist
 FOR EACH ROW
@@ -31,6 +33,8 @@ END;
 
 -- 2. Trigger: Ensure Unique Director for Content
 -- Block duplicate director assignments, log errors to Director_Assignment_Errors
+DROP TRIGGER IF EXISTS trg_unique_director;
+DELIMITER $$
 CREATE TRIGGER trg_unique_director
 BEFORE INSERT ON Content_Director
 FOR EACH ROW
@@ -46,6 +50,8 @@ BEGIN
 END;
 
 -- 3. Trigger: Log Negative Transaction Amounts
+DROP TRIGGER IF EXISTS trg_log_transaction_error;
+DELIMITER $$
 CREATE TRIGGER trg_log_transaction_error
 AFTER INSERT ON Transaction
 FOR EACH ROW
@@ -56,6 +62,8 @@ BEGIN
 END;
 
 -- 4. Trigger: Archive Content if Average Rating Drops Below 2.0
+DROP TRIGGER IF EXISTS trg_archive_content_on_low_rating;
+DELIMITER $$
 CREATE TRIGGER trg_archive_content_on_low_rating
 AFTER INSERT ON Review
 FOR EACH ROW
