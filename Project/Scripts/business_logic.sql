@@ -8,9 +8,12 @@ CREATE TABLE IF NOT EXISTS Error_Log (
     error_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Drop all triggers first to avoid 'already exists' errors
+DROP TRIGGER IF EXISTS trg_watchlist_limit;
+DROP TRIGGER IF EXISTS trg_log_transaction_error;
+
 -- 2. Trigger: Enforce Watchlist Size Limit (max 100 items per user)
 DELIMITER $$
-can
 CREATE TRIGGER trg_watchlist_limit
 BEFORE INSERT ON Watchlist
 FOR EACH ROW
