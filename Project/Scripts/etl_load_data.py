@@ -16,6 +16,19 @@ def split_names(names):
         return []
     return [n.strip() for n in re.split(r',|;', names) if n.strip()]
 
+from datetime import datetime
+
+def log_etl_metric(engine, job_name, start_time, end_time, rows_processed, status, error_message):
+    with engine.connect() as conn:
+        conn.execute(text('INSERT INTO etl_metrics (job_name, start_time, end_time, rows_processed, status, error_message) VALUES (:job_name, :start_time, :end_time, :rows_processed, :status, :error_message)'), {
+            'job_name': job_name,
+            'start_time': start_time,
+            'end_time': end_time,
+            'rows_processed': rows_processed,
+            'status': status,
+            'error_message': error_message
+        })
+
 def main():
     df = pd.read_csv(CSV_PATH)
     engine = create_engine(DB_URL)

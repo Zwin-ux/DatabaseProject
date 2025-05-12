@@ -25,9 +25,6 @@ FOR EACH ROW
 BEGIN
     DECLARE watchlist_count INT;
     
-    -- Use transaction for better ACID guarantees
-    START TRANSACTION;
-    
     -- Get actual count with lock to prevent race conditions
     SELECT COUNT(*) INTO watchlist_count 
     FROM Watchlist 
@@ -41,8 +38,6 @@ BEGIN
         ORDER BY watchlist_id ASC
         LIMIT 1;
     END IF;
-    
-    COMMIT;
 END$$
 DELIMITER ;;
 

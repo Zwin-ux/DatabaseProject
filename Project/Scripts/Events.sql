@@ -41,6 +41,7 @@ DO
 
 DROP EVENT IF EXISTS refresh_popular_content_rankings_event;
 DELIMITER $$
+DROP EVENT IF EXISTS refresh_popular_content_rankings_event;
 CREATE EVENT refresh_popular_content_rankings_event
 ON SCHEDULE EVERY 1 DAY
 DO

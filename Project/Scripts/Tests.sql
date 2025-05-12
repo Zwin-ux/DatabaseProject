@@ -30,6 +30,11 @@ INSERT INTO Content_Availability (content_id, country_id, available_from, availa
 SELECT * FROM Content_Availability WHERE content_id = 1 AND country_id = 1;
 
 -- Test 6: Subscription Unlocks Content
+
+-- Test 7: ETL Metrics Logging
+CALL log_etl_metric('test_job', NOW(), NOW(), 123, 'success', NULL);
+SELECT * FROM etl_metrics WHERE job_name = 'test_job';
+
 -- Add and check access map
 INSERT INTO Subscription_Plan (name, price) VALUES ('Premium', 9.99);
 INSERT INTO Content_Access_Map (plan_id, content_id) VALUES (1, 1);

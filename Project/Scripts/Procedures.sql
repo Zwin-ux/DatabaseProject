@@ -1,4 +1,22 @@
 -- Procedures.sql
+
+-- Procedure: Log ETL Metrics for the PDF
+DROP PROCEDURE IF EXISTS log_etl_metric;
+DELIMITER $$
+CREATE PROCEDURE log_etl_metric(
+    IN job_name VARCHAR(255),
+    IN start_time DATETIME,
+    IN end_time DATETIME,
+    IN rows_processed INT,
+    IN status VARCHAR(50),
+    IN error_message VARCHAR(1024)
+)
+BEGIN
+    INSERT INTO etl_metrics (job_name, start_time, end_time, rows_processed, status, error_message)
+    VALUES (job_name, start_time, end_time, rows_processed, status, error_message);
+END$$
+DELIMITER ;
+
 -- Contains all procedures for MultimediaContentDB
 
 -- Auxiliary Table for Payment Errors
@@ -85,8 +103,8 @@ CREATE TABLE IF NOT EXISTS Popular_Content (
     genre_id INT,
     content_id INT,
     view_count INT,
-    rank INT,
-    PRIMARY KEY (genre_id, rank)
+    `rank` INT,
+    PRIMARY KEY (genre_id, `rank`)
 );
 DROP PROCEDURE IF EXISTS refresh_popular_content_rankings;
 DELIMITER $$
@@ -128,12 +146,12 @@ BEGIN
     DELETE FROM Popular_Content;
     
     -- Insert new rankings using the temp table
-    INSERT INTO Popular_Content (genre_id, content_id, view_count, rank)
+    INSERT INTO Popular_Content (genre_id, content_id, view_count, `rank`)
     SELECT 
         cg.genre_id, 
         cg.content_id, 
         IFNULL(vc.view_count, 0) AS view_count, 
-        rnk
+        rnk AS `rank`
     FROM (
         SELECT 
             cg.genre_id, 
@@ -176,6 +194,7 @@ END$$
 DELIMITER ;
 
 -- 6. Procedure: Handle Failed Payment
+DROP PROCEDURE IF EXISTS handle_failed_payment;
 DELIMITER $$
 CREATE PROCEDURE handle_failed_payment(uid INT)
 BEGIN

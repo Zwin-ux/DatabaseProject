@@ -89,9 +89,9 @@ CREATE FUNCTION get_genre_rank(gid INT)
 RETURNS INT
 DETERMINISTIC
 BEGIN
-    DECLARE rank INT;
-    SELECT COUNT(*) INTO rank FROM Content_Genre WHERE genre_id = gid;
-    RETURN rank;
+    DECLARE `rank` INT;
+    SELECT COUNT(*) INTO `rank` FROM Content_Genre WHERE genre_id = gid;
+    RETURN `rank`;
 END$$
 DELIMITER ;
 
