@@ -1,4 +1,7 @@
 -- Procedures.sql
+-- Author: Mazen Zwin
+-- 90%+ implemented by Mazen Zwin | Database Analyst/Developer
+-- Contains advanced stored procedures for ETL, reporting, and batch updates in MultimediaContentDB
 
 -- Procedure: Log ETL Metrics for the PDF
 DROP PROCEDURE IF EXISTS log_etl_metric;

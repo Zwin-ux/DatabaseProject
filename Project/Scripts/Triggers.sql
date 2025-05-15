@@ -1,5 +1,7 @@
 -- Triggers.sql
--- Contains all triggers for MultimediaContentDB
+-- Author: Mazen Zwin
+-- 90%+ implemented by Mazen Zwin | Database Analyst/Developer
+-- Contains advanced triggers for business rule enforcement, error logging, and data integrity in MultimediaContentDB
 
 -- Auxiliary Error Tables (if not exists)
 CREATE TABLE IF NOT EXISTS Director_Assignment_Errors (

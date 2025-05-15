@@ -1,5 +1,8 @@
 -- Functions.sql
--- Contains all functions for MultimediaContentDB
+-- Author: Mazen Zwin
+-- 90%+ implemented by Mazen Zwin | Database Analyst/Developer
+-- Contains advanced SQL functions for MultimediaContentDB
+-- Features: analytics, performance optimization, collaborator discovery
 
 -- 1. Function: Rank Top 3 Genres by Watch Hours (last month)
 DROP FUNCTION IF EXISTS get_top_genres_by_watch_hours;

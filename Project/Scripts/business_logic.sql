@@ -1,7 +1,11 @@
 -- business_logic.sql
--- Contains triggers, functions, procedures, events, and test scripts for MultimediaContentDB
+-- Author: Mazen Zwin
+-- 90%+ implemented by Mazen Zwin | Database Analyst/Developer
+-- Contains advanced triggers, functions, procedures, events, and test scripts for MultimediaContentDB
+-- Features: error logging, watchlist enforcement, transaction validation, genre ranking, subscription validation
 
 -- 1. Error Log Table
+-- Centralized table for capturing system errors and business rule violations
 CREATE TABLE IF NOT EXISTS Error_Log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,
     error_message TEXT,
