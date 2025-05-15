@@ -13,7 +13,6 @@ Welcome to the portfolio-ready version of my Netflix-style multimedia database m
 ---
 
 ## 🏆 Why This Project Stands Out
-- **90%+ Authored by Me:** All major SQL, Python, and design work by Mazen Zwin.
 - **Advanced SQL:** Triggers, stored procedures, analytics functions, error logging, and batch operations.
 - **Production-Ready:** Clean, modular code and professional documentation.
 - **Performance:** Indexed queries, optimized joins, and scalable schema.
